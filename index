@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Qué día fue? - Estilo Zeller</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: #f6f1e7;
+      color: #4b3b2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle, #f9f4ec, #f3ead8);
+    }
+
+    .container {
+      background: #fffdf6;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(100, 80, 60, 0.2);
+      width: 90%;
+      max-width: 460px;
+      text-align: center;
+      border: 1px solid #d8cbb2;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #7a5c36;
+      border-bottom: 2px dashed #d8cbb2;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin: 0.6rem 0 0.2rem;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #5c4a32;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      border: 1.5px solid #b8a88a;
+      border-radius: 0.6rem;
+      font-size: 1rem;
+      background: #fcf8ef;
+      margin-bottom: 1rem;
+      color: #3d3224;
+    }
+
+    button {
+      background: #a18464;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #8c7156;
+    }
+
+    .resultado {
+      margin-top: 2rem;
+      background: #fef9f1;
+      border-radius: 1rem;
+      padding: 1rem;
+      font-size: 1.05rem;
+      color: #3f3527;
+      border: 1px solid #e5dbc3;
+    }
+
+    .resultado strong {
+      color: #7a5c36;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>¿Qué día fue?</h1>
+    
+    <label for="dia">Día</label>
+    <input type="number" id="dia" min="1" max="31">
+
+    <label for="mes">Mes</label>
+    <input type="number" id="mes" min="1" max="12">
+
+    <label for="anio">Año</label>
+    <input type="number" id="anio">
+
+    <button onclick="calcularDia()">Calcular</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    function zeller(dia, mes, anio) {
+      if (mes === 1 || mes === 2) {
+        mes += 12;
+        anio -= 1;
+      }
+
+      let q = dia;
+      let m = mes;
+      let K = anio % 100;
+      let J = Math.floor(anio / 100);
+
+      let h_sin_modulo = q + Math.floor((13 * (m + 1)) / 5) + K + Math.floor(K / 4) + Math.floor(J / 4) + (5 * J);
+      let h = h_sin_modulo % 7;
+      let dias = ['Sábado', 'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+
+      return {
+        modulo: h,
+        dia: dias[h]
+      };
+    }
+
+    function calcularDia() {
+      const dia = parseInt(document.getElementById('dia').value);
+      const mes = parseInt(document.getElementById('mes').value);
+      const anio = parseInt(document.getElementById('anio').value);
+
+      if (!dia || !mes || !anio) {
+        document.getElementById('resultado').innerHTML = "⚠️ Por favor, completa todos los campos.";
+        return;
+      }
+
+      const resultado = zeller(dia, mes, anio);
+
+      document.getElementById('resultado').innerHTML = `
+        📅 <strong>Fecha:</strong> ${dia.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}/${anio}<br>
+        ➗ <strong>Módulo 7:</strong> ${resultado.modulo}<br>
+        🗓️ <strong>Día de la semana:</strong> ${resultado.dia}
+      `;
+    }
+  </script>
+</body>
+</html>
